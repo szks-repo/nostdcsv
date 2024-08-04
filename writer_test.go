@@ -81,7 +81,7 @@ func TestWriter_Write(t *testing.T) {
 			t.Parallel()
 
 			gotBuf := &bytes.Buffer{}
-			w := NewWriter(gotBuf, `"`)
+			w := NewWriter(gotBuf)
 			if err := w.WriteAll(tt.inputs); err != nil {
 				t.Fatal(err)
 			}
