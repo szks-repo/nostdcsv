@@ -1,4 +1,4 @@
-package nostdcsv
+package qcsv
 
 import (
 	"bytes"

@@ -1,4 +1,4 @@
-module github.com/szks-repo/nostdcsv
+module github.com/szks-repo/qcsv
 
 go 1.21.5
 
