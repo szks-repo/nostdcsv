@@ -49,10 +49,12 @@ func TestWriter_Write(t *testing.T) {
 			inputs: [][]string{
 				{"message1", "message2", "date"},
 				{"hello", "world", `="20060102150406"`},
+				{"hello", "world", `=""`},
 			},
 			wants: strings.Join([]string{
 				`"message1","message2","date"`,
 				`"hello","world","=""20060102150406"""`,
+				`"hello","world","="""""`,
 			}, "\n"),
 		},
 		{
