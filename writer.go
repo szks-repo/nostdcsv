@@ -6,7 +6,6 @@ package nostdcsv
 
 import (
 	"bufio"
-	"bytes"
 	"errors"
 	"io"
 	"strings"
@@ -65,7 +64,6 @@ func (w *Writer) Write(record []string) error {
 			return err
 		}
 
-		var fieldBuilder bytes.Buffer
 		for len(field) > 0 {
 			// Search for special characters.
 			i := strings.IndexAny(field, "\"\r\n")
@@ -74,7 +72,7 @@ func (w *Writer) Write(record []string) error {
 			}
 
 			// Copy verbatim everything before the special character.
-			if _, err := fieldBuilder.WriteString(field[:i]); err != nil {
+			if _, err := w.w.WriteString(field[:i]); err != nil {
 				return err
 			}
 			field = field[i:]
@@ -84,16 +82,16 @@ func (w *Writer) Write(record []string) error {
 				var err error
 				switch field[0] {
 				case '"':
-					_, err = fieldBuilder.WriteString(`""`)
+					_, err = w.w.WriteString(`""`)
 				case '\r':
 					if !w.UseCRLF {
-						err = fieldBuilder.WriteByte('\r')
+						err = w.w.WriteByte('\r')
 					}
 				case '\n':
 					if w.UseCRLF {
-						_, err = fieldBuilder.WriteString("\r\n")
+						_, err = w.w.WriteString("\r\n")
 					} else {
-						err = fieldBuilder.WriteByte('\n')
+						err = w.w.WriteByte('\n')
 					}
 				}
 				field = field[1:]
@@ -102,10 +100,7 @@ func (w *Writer) Write(record []string) error {
 				}
 			}
 		}
-		if err := fieldBuilder.WriteByte('"'); err != nil {
-			return err
-		}
-		if _, err := w.w.Write(fieldBuilder.Bytes()); err != nil {
+		if err := w.w.WriteByte('"'); err != nil {
 			return err
 		}
 	}
