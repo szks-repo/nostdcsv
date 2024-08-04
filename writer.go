@@ -18,17 +18,15 @@ type Writer struct {
 	Comma   rune // Field delimiter (set to ',' by NewWriter)
 	UseCRLF bool // True to use \r\n as the line terminator
 	w       *bufio.Writer
-	left    string
-	right   string
+	q       string
 }
 
 // NewWriter returns a new Writer that writes to w.
-func NewWriter(w io.Writer, wraps [2]string) *Writer {
+func NewWriter(w io.Writer, quote string) *Writer {
 	return &Writer{
 		Comma: ',',
 		w:     bufio.NewWriter(w),
-		left:  wraps[0],
-		right: wraps[1],
+		q:     quote,
 	}
 }
 
@@ -57,7 +55,7 @@ func (w *Writer) Write(record []string) error {
 		// If we don't have to have a quoted field then just
 		// write out the field and continue to the next field.
 		if !w.fieldNeedsQuotes(field) {
-			if _, err := w.w.WriteString(w.left + field + w.right); err != nil {
+			if _, err := w.w.WriteString(w.q + field + w.q); err != nil {
 				return err
 			}
 			continue
